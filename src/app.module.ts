@@ -6,6 +6,7 @@ import { User } from './users/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { Post } from './posts/entities/post.entity';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { Post } from './posts/entities/post.entity';
       models: [User, Post],
       autoLoadModels: true,
     }),
+    ScheduleModule.forRoot(),
     UsersModule,
     AuthModule,
     PostsModule,

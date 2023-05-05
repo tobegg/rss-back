@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
 import { CreatePostDto } from './dto/create-post.dto';
+import { SearchPostDto } from './dto/search-post.dto';
 import { Post } from './entities/post.entity';
 
 @Injectable()
@@ -16,20 +18,42 @@ export class PostsService {
     }
   }
 
-  async findAll() {
-    const posts = await this.postRepository.findAll({ include: { all: true } });
+  async findAll(searchDto: SearchPostDto) {
+    const posts = await this.postRepository.findAndCountAll({
+      where: {
+        [Op.or]: [
+          { title: { [Op.like]: `%${searchDto.search}%` } },
+          { description: { [Op.like]: `%${searchDto.search}%` } },
+        ],
+        categories: { [Op.like]: `%${searchDto.filter}%` },
+      },
+      limit: searchDto.limit,
+      include: { all: true },
+      offset: (searchDto.page - 1) * searchDto.limit,
+      order: [['id', 'DESC']],
+      distinct: true,
+    });
     return posts;
+  }
+
+  async remove(id: number) {
+    await this.postRepository.destroy({ where: { id } });
+    return `Post: ${id} was deleted`;
   }
 
   async count() {
     return await this.postRepository.count();
   }
-  /* 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
-  }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
-  } */
+  async update(id: number, postDto: CreatePostDto) {
+    try {
+      const post = await this.postRepository.update(
+        { title: postDto.title, description: postDto.description },
+        { where: { id } },
+      );
+      return post;
+    } catch (e) {
+      console.log(e);
+    }
+  }
 }

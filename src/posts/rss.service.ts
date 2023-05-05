@@ -23,7 +23,7 @@ export class RssService implements OnApplicationBootstrap {
         this.postsService.create({
           title: item.title,
           description: item.contentSnippet,
-          categories: item.categories,
+          categories: item.categories.join('|'),
           image: '',
           author: item.creator,
         });

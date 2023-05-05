@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CreatePostDto {
   @ApiProperty({ example: 'Title', description: 'Title' })
@@ -10,9 +10,9 @@ export class CreatePostDto {
   @IsString({ message: 'Should be a string' })
   readonly description: string;
 
-  @ApiProperty({ example: '["home"]', description: 'Categories' })
-  @IsArray({ message: 'Should be an array' })
-  readonly categories: string[];
+  @ApiProperty({ example: 'home|google', description: 'Categories' })
+  @IsString({ message: 'Should be a string' })
+  readonly categories: string;
 
   @ApiProperty({
     example: 'https://example.com/test.jpg',

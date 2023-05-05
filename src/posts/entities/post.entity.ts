@@ -4,7 +4,7 @@ import { Column, DataType, Model, Table } from 'sequelize-typescript';
 interface PostCreationAttrs {
   title: string;
   description: string;
-  categories: string[];
+  categories: string;
   image: string;
   author: string;
 }
@@ -28,9 +28,9 @@ export class Post extends Model<Post, PostCreationAttrs> {
   @Column({ type: DataType.TEXT, allowNull: false })
   description: string;
 
-  @ApiProperty({ example: 'Post Description', description: 'Post categories' })
-  @Column({ type: DataType.ARRAY(DataType.STRING) })
-  categories: string[];
+  @ApiProperty({ example: 'home|google', description: 'Post categories' })
+  @Column({ type: DataType.STRING })
+  categories: string;
 
   @ApiProperty({
     example: 'https://example.com/test.jpg',
@@ -39,6 +39,10 @@ export class Post extends Model<Post, PostCreationAttrs> {
   @Column({ type: DataType.STRING })
   image: string;
 
+  @ApiProperty({
+    example: 'Name LastName',
+    description: 'Post author',
+  })
   @Column({ type: DataType.STRING })
   author: string;
 }
